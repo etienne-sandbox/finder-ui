@@ -1,4 +1,4 @@
-// SYNCED FILE
+/* SYNCED FILE */
 import {
   ComponentType,
   ReactNode,

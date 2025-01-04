@@ -1,4 +1,4 @@
-// SYNCED FILE
+/* SYNCED FILE */
 import { nanoid } from "nanoid";
 import { OverlayScrollbars } from "overlayscrollbars";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";

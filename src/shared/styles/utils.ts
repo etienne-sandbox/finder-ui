@@ -1,4 +1,4 @@
-// SYNCED FILE
+/* SYNCED FILE */
 import { clsx, type ClassValue } from "clsx";
 import { CSSProperties } from "react";
 import { twMerge } from "tailwind-merge";

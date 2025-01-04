@@ -1,4 +1,4 @@
-// SYNCED FILE
+/* SYNCED FILE */
 import { Path, To } from "history";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { createElement, ReactNode, useCallback, useMemo } from "react";

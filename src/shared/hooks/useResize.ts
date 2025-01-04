@@ -1,4 +1,4 @@
-// SYNCED FILE
+/* SYNCED FILE */
 import { nanoid } from "nanoid";
 import type { MutableRefObject } from "react";
 import { useCallback, useMemo, useState } from "react";
