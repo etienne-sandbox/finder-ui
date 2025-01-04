@@ -1,7 +1,7 @@
 // SYNCED FILE
 import { ClickScrollPlugin, OverlayScrollbars } from "overlayscrollbars";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import scrollIntoView from "smooth-scroll-into-view-if-needed";
 import { TUseResizeWidth, useResize } from "../../hooks/useResize";
 import { cn } from "../../styles/utils";
@@ -52,15 +52,6 @@ export function FinderPanel({
     return () => clearTimeout(timer);
   }, [isActive]);
 
-  const [hasScroll, setHasScroll] = useState(false);
-
-  const onInitUpdate = useCallback((instance: OverlayScrollbars) => {
-    const hasScroll =
-      instance.state().overflowStyle.y === "visible" ||
-      instance.state().overflowStyle.y === "scroll";
-    setHasScroll(hasScroll);
-  }, []);
-
   const onHandleClick = useMemo(
     () => onDoubleTap(resizer.reset),
     [resizer.reset]
@@ -92,7 +83,6 @@ export function FinderPanel({
           },
           overflow: { x: "scroll", y: "scroll" },
         }}
-        events={{ initialized: onInitUpdate, updated: onInitUpdate }}
       >
         {children}
       </OverlayScrollbarsComponent>
@@ -109,18 +99,6 @@ export function FinderPanel({
         style={{ width: GUTTER_WIDTH, height: MINI_HANDLE_HEIGHT }}
         onClick={onHandleClick}
       />
-      {!hasScroll && (
-        <BigHandle
-          onPointerDown={resizer.onPointerDown}
-          className="right-0 z-10"
-          style={{
-            width: GUTTER_WIDTH,
-            top: MINI_HANDLE_HEIGHT,
-            bottom: MINI_HANDLE_HEIGHT,
-          }}
-          onClick={onHandleClick}
-        />
-      )}
     </div>
   );
 }
@@ -140,23 +118,6 @@ function MiniHandle({
     >
       <div className="w-px bg-neutral-600 rounded-full h-2" />
       <div className="w-px bg-neutral-600 rounded-full h-2" />
-    </div>
-  );
-}
-
-function BigHandle({
-  className,
-  ...rest
-}: React.ComponentPropsWithoutRef<"div">) {
-  return (
-    <div
-      className={cn(
-        "absolute flex justify-center items-stretch gap-[3px] py-1 cursor-col-resize group touch-none",
-        className
-      )}
-      {...rest}
-    >
-      <div className="w-px bg-neutral-700 rounded-full opacity-0 group-hover:opacity-100 transition-all" />
     </div>
   );
 }
