@@ -1,5 +1,5 @@
 import { chemin, pString } from "@dldc/chemin";
-import { createFinderStore, TPanelsDefsBase } from "./createFinderStore";
+import { createFinderStore, TPanelsDefsBase } from "../shared/utils/createFinderStore";
 
 export type HomeActiveId = null | "files" | "users";
 

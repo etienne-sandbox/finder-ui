@@ -1,3 +1,4 @@
+// SYNCED FILE
 import { MouseEvent } from "react";
 
 export interface TDoubleTapOptions {

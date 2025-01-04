@@ -1,6 +1,6 @@
 import * as Ariakit from "@ariakit/react";
 import { useCallback } from "react";
-import { cn } from "../utils/styles";
+import { cn } from "../shared/styles/utils";
 
 interface PanelListProps extends React.ComponentPropsWithoutRef<"div"> {
   store: Ariakit.CompositeStore;

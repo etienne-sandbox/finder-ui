@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "typecheck:watch": "tsc -b --watch"
+    "typecheck:watch": "tsc -b --watch",
+    "copieur": "deno run -A jsr:@dldc/copieur@0.2.3"
   },
   "dependencies": {
     "@ariakit/core": "^0.4.14",

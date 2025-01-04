@@ -2,8 +2,8 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { FilesPanel } from "../panels/Files";
 import { HomePanel } from "../panels/Home";
+import { Finder } from "../shared/components/finder/Finder";
 import { BASE_PANELS, FinderProvider, Panel, PanelProvider, PanelStates, useFinderOrFail } from "../stores/finderStore";
-import { Finder } from "./finder/Finder";
 
 const PANELS_RENDERS: { [K in keyof PanelStates]: (state: PanelStates[K]) => React.ReactElement } = {
   home: () => <HomePanel />,

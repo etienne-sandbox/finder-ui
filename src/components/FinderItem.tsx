@@ -1,8 +1,8 @@
 import * as Ariakit from "@ariakit/react";
 import { useAtomValue } from "jotai";
 import { forwardRef } from "react";
+import { cn } from "../shared/styles/utils";
 import { usePanelOrFail } from "../stores/finderStore";
-import { cn } from "../utils/styles";
 
 interface FinderItemProps extends Omit<React.ComponentPropsWithoutRef<"button">, "children"> {
   compositeId: string;

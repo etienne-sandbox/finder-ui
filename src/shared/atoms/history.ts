@@ -1,3 +1,4 @@
+// SYNCED FILE
 import { createBrowserHistory, Location } from "history";
 import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";

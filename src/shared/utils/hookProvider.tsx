@@ -1,6 +1,15 @@
-import { ComponentType, ReactNode, createContext, memo, useContext } from "react";
+// SYNCED FILE
+import {
+  ComponentType,
+  ReactNode,
+  createContext,
+  memo,
+  useContext,
+} from "react";
 
-export type TProviderProps<Data, Props> = Props & { children: undefined | ReactNode | ((data: Data) => ReactNode) };
+export type TProviderProps<Data, Props> = Props & {
+  children: undefined | ReactNode | ((data: Data) => ReactNode);
+};
 
 export interface THookProviderResult<Data, Props> {
   useMaybe(): Data | null;
@@ -14,12 +23,16 @@ export function createHookProvider<Data, Props>(
 ): THookProviderResult<Data, Props> {
   const context = createContext<Data | null>(null);
 
-  const Provider: ComponentType<TProviderProps<Data, Props>> = memo(function Provider({ children, ...props }) {
-    const data = useLogic(props as Props);
-    return (
-      <context.Provider value={data}>{typeof children === "function" ? children(data) : children}</context.Provider>
-    );
-  });
+  const Provider: ComponentType<TProviderProps<Data, Props>> = memo(
+    function Provider({ children, ...props }) {
+      const data = useLogic(props as Props);
+      return (
+        <context.Provider value={data}>
+          {typeof children === "function" ? children(data) : children}
+        </context.Provider>
+      );
+    }
+  );
 
   function useMaybe(): Data | null {
     return useContext(context);

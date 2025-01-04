@@ -1,10 +1,11 @@
+// SYNCED FILE
 import { ClickScrollPlugin, OverlayScrollbars } from "overlayscrollbars";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import scrollIntoView from "smooth-scroll-into-view-if-needed";
-import { TResizeWidth, useResizablePanel } from "../../hooks/useResizablePanel";
+import { TUseResizeWidth, useResize } from "../../hooks/useResize";
+import { cn } from "../../styles/utils";
 import { onDoubleTap } from "../../utils/onDoubleTap";
-import { cn } from "../../utils/styles";
 
 import "overlayscrollbars/overlayscrollbars.css";
 import "./panel-scrollbar.css";
@@ -14,8 +15,9 @@ OverlayScrollbars.plugin(ClickScrollPlugin);
 const GUTTER_WIDTH = 11;
 const MINI_HANDLE_HEIGHT = 20;
 
-export interface FinderPanelProps extends React.ComponentPropsWithoutRef<"div"> {
-  initialWidth?: TResizeWidth;
+export interface FinderPanelProps
+  extends React.ComponentPropsWithoutRef<"div"> {
+  initialWidth?: TUseResizeWidth;
   className?: string;
   resizeLocalStorageKey?: string;
   isActive?: boolean;
@@ -30,7 +32,7 @@ export function FinderPanel({
 }: FinderPanelProps) {
   const panelRef = useRef<HTMLDivElement | null>(null);
 
-  const resizer = useResizablePanel(panelRef, {
+  const resizer = useResize(panelRef, {
     direction: "left",
     initialSize: "auto",
     localStorageKey: resizeLocalStorageKey,
@@ -53,16 +55,24 @@ export function FinderPanel({
   const [hasScroll, setHasScroll] = useState(false);
 
   const onInitUpdate = useCallback((instance: OverlayScrollbars) => {
-    const hasScroll = instance.state().overflowStyle.y === "visible" || instance.state().overflowStyle.y === "scroll";
+    const hasScroll =
+      instance.state().overflowStyle.y === "visible" ||
+      instance.state().overflowStyle.y === "scroll";
     setHasScroll(hasScroll);
   }, []);
 
-  const onHandleClick = useMemo(() => onDoubleTap(resizer.reset), [resizer.reset]);
+  const onHandleClick = useMemo(
+    () => onDoubleTap(resizer.reset),
+    [resizer.reset]
+  );
 
   return (
     <div
       ref={panelRef}
-      className={cn("shrink-0 relative max-w-[var(--finder-panel-max-width)]", className)}
+      className={cn(
+        "shrink-0 relative max-w-[var(--finder-panel-max-width)]",
+        className
+      )}
       style={{
         width: resizer.dynamicSize,
         ["--gutter-width" as string]: `${GUTTER_WIDTH}px`,
@@ -103,7 +113,11 @@ export function FinderPanel({
         <BigHandle
           onPointerDown={resizer.onPointerDown}
           className="right-0 z-10"
-          style={{ width: GUTTER_WIDTH, top: MINI_HANDLE_HEIGHT, bottom: MINI_HANDLE_HEIGHT }}
+          style={{
+            width: GUTTER_WIDTH,
+            top: MINI_HANDLE_HEIGHT,
+            bottom: MINI_HANDLE_HEIGHT,
+          }}
           onClick={onHandleClick}
         />
       )}
@@ -111,7 +125,10 @@ export function FinderPanel({
   );
 }
 
-function MiniHandle({ className, ...rest }: React.ComponentPropsWithoutRef<"div">) {
+function MiniHandle({
+  className,
+  ...rest
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div
       className={cn(
@@ -127,7 +144,10 @@ function MiniHandle({ className, ...rest }: React.ComponentPropsWithoutRef<"div"
   );
 }
 
-function BigHandle({ className, ...rest }: React.ComponentPropsWithoutRef<"div">) {
+function BigHandle({
+  className,
+  ...rest
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div
       className={cn(
