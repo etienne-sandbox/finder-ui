@@ -82,5 +82,13 @@ export const BASE_PANELS: TPanelsDefsBase<PanelStates> = [
   },
 ];
 
-export const { FinderProvider, useFinderMaybe, useFinderOrFail, PanelIndexProvider, usePanelIndex, usePanelUtils } =
-  createFinderStore<PanelStates>();
+export const {
+  FinderProvider,
+  useFinderMaybe,
+  useFinderOrFail,
+  PanelProvider,
+  usePanelMaybe,
+  usePanelOrFail,
+  usePanelState,
+  Panel,
+} = createFinderStore<PanelStates>();

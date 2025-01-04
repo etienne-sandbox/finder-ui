@@ -16,3 +16,220 @@
   --color-dynamic-900: 30 58 138;
   --color-dynamic-950: 23 37 84;
 }
+
+// ---------
+
+.button {
+  --border: rgb(0 0 0/13%);
+  --highlight: rgb(255 255 255/20%);
+  --shadow: rgb(0 0 0/10%);
+  display: flex;
+  height: 2.5rem;
+  user-select: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  border-radius: 0.5rem;
+  border-style: none;
+  background-color: white;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: black;
+  text-decoration-line: none;
+  outline-width: 2px;
+  outline-offset: 2px;
+  outline-color: hsl(204 100% 40%);
+  box-shadow: inset 0 0 0 1px var(--border), inset 0 2px 0 var(--highlight), inset 0 -1px 0 var(--shadow),
+    0 1px 1px var(--shadow);
+}
+
+.button:where(.dark, .dark *) {
+  --border: rgb(255 255 255/10%);
+  --highlight: rgb(255 255 255/5%);
+  --shadow: rgb(0 0 0/25%);
+  background-color: rgb(255 255 255 / 0.05);
+  color: white;
+  box-shadow: inset 0 0 0 1px var(--border), inset 0 -1px 0 1px var(--shadow), inset 0 1px 0 var(--highlight);
+}
+
+.button:not(:active):hover {
+  --border: rgb(0 0 0/33%);
+}
+
+.button:where(.dark, .dark *):not(:active):hover {
+  --border: rgb(255 255 255/25%);
+}
+
+.button[aria-disabled="true"] {
+  opacity: 0.5;
+}
+
+.button[data-focus-visible] {
+  outline-style: solid;
+}
+
+.button:active,
+.button[data-active] {
+  padding-top: 0.125rem;
+  box-shadow: inset 0 0 0 1px var(--border), inset 0 2px 0 var(--border);
+}
+
+@media (min-width: 640px) {
+  .button {
+    gap: 0.5rem;
+  }
+}
+
+.button:active:where(.dark, .dark *),
+.button[data-active]:where(.dark, .dark *) {
+  box-shadow: inset 0 0 0 1px var(--border), inset 0 1px 1px 1px var(--shadow);
+}
+
+.separator {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  height: 0px;
+  width: 100%;
+  border-top-width: 1px;
+  border-color: hsl(204 20% 88%);
+}
+
+.separator:where(.dark, .dark *) {
+  border-color: hsl(204 4% 28%);
+}
+
+.menu-wrapper {
+  z-index: 50;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: hsl(204 20% 88%);
+  background-color: white;
+  color: black;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  scroll-snap-stop: always;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.menu-wrapper:where(.dark, .dark *) {
+  border-color: hsl(204 4% 24%);
+  background-color: hsl(204 4% 16%);
+  color: white;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.25), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.menu-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.menu {
+  z-index: 50;
+  display: flex;
+  height: min(320px, var(--popover-available-height));
+  width: 320px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: inherit;
+  padding: 0.5rem;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.menu[data-leave] {
+  z-index: 0;
+}
+
+.menu-item {
+  display: flex;
+  width: 100%;
+  scroll-margin: 0.5rem;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  text-align: left;
+  -webkit-tap-highlight-color: hsl(204 100% 40%);
+  outline: none !important;
+}
+
+.menu-item[aria-disabled="true"] {
+  opacity: 0.25;
+}
+
+.menu-item[data-active-item][data-focus-visible] {
+  background-color: hsl(204 100% 40%);
+  color: white;
+}
+
+@media (any-hover: hover) {
+  .menu-item {
+    cursor: default;
+  }
+  .menu-item:hover {
+    background-color: hsl(204 100% 80% / 0.4);
+  }
+  .menu-item:active,
+  .menu-item[data-active] {
+    color: white;
+  }
+  .menu-item:active[data-active-item],
+  .menu-item[data-active][data-active-item] {
+    background-color: hsl(204 100% 32%);
+  }
+  .menu-item:hover:where(.dark, .dark *) {
+    background-color: hsl(204 100% 40% / 0.25);
+  }
+  .menu-item:active:where(.dark, .dark *),
+  .menu-item[data-active]:where(.dark, .dark *) {
+    background-color: hsl(204 100% 40%);
+  }
+}
+
+.menu-item .label {
+  flex: 1 1 0%;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: var(--header-size) auto var(--header-size);
+  align-items: center;
+  --header-size: 2.5rem;
+}
+
+.header .menu-item {
+  height: var(--header-size);
+  width: var(--header-size);
+  justify-content: center;
+}
+
+.heading {
+  margin: 0px;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  color: black;
+}
+
+.heading:where(.dark, .dark *) {
+  color: white;
+}
+
+.group-label {
+  cursor: default;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  opacity: 0.6;
+}

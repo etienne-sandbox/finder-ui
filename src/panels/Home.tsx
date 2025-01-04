@@ -1,72 +1,55 @@
 import * as Ariakit from "@ariakit/react";
+import { useAtomValue } from "jotai";
+import { Fragment, useMemo } from "react";
 import { FinderItem } from "../components/FinderItem";
-import { Panel } from "../components/Panel";
 import { PanelList } from "../components/PanelList";
-import { HomeActiveId, usePanelUtils } from "../stores/finderStore";
+import { Panel, usePanelOrFail } from "../stores/finderStore";
 
 export function HomePanel() {
-  const { isActive, isSelected, state, updateState, openPanel } = usePanelUtils("home");
+  const { $nextPanel, openPanel, closePanelsAfter } = usePanelOrFail();
 
-  const store = Ariakit.useCompositeStore({
-    orientation: "vertical",
-    activeId: isSelected ? null : state.activeId,
-    setActiveId: (id) => updateState((p) => ({ ...p, activeId: id as HomeActiveId })),
-  });
+  const nextPanel = useAtomValue($nextPanel);
 
-  // useEffect(() => {
-  //   if (isActive) {
-  //     // activate
-  //     if (selectedIdRef.current) {
-  //       store.setActiveId(selectedIdRef.current);
-  //     } else {
-  //       store.first();
-  //     }
-  //     return;
-  //   }
-  //   if (!isSelected) {
-  //     // deactivate
-  //     store.setActiveId(null);
-  //     return;
-  //   }
-  //   // deactivate
-  //   if (store.getState().activeId) {
-  //     setSelectedId(store.getState().activeId);
-  //   }
-  // }, [isActive, isSelected, selectedIdRef, store]);
+  const activePanelKey = useMemo(() => {
+    switch (nextPanel?.key) {
+      case "files":
+        return "files" as const;
+      case "users":
+        return "users" as const;
+      default:
+        return null;
+    }
+  }, [nextPanel?.key]);
+
+  const store = Ariakit.useSelectStore({ orientation: "vertical" });
 
   return (
-    <Panel className="flex flex-col">
-      <div>{JSON.stringify({ isActive, isSelected })}</div>
-      <PanelList
-        store={store}
-        className="flex-1"
-        tabIndex={isActive ? 0 : -1}
-        onNext={() => {
-          const activeId = store.getState().activeId;
-          if (activeId) {
-            switch (activeId) {
-              case "files":
-                openPanel({ key: "files", state: {} });
-                break;
-              case "users":
-                openPanel({ key: "users", state: {} });
-                break;
-            }
-          }
-        }}
-      >
+    <Panel className="w-full md:w-[500px]">
+      <PanelList store={store} className="flex-1 h-full" onDeselect={closePanelsAfter}>
         <FinderItem
-          selected={isSelected && state.activeId === "files"}
           compositeId="files"
+          selectedId={activePanelKey}
           title="Files"
           onClick={() => openPanel({ key: "files", state: {} })}
         />
         <FinderItem
-          selected={isSelected && state.activeId === "users"}
           compositeId="users"
+          selectedId={activePanelKey}
           title="Users"
           onClick={() => openPanel({ key: "users", state: {} })}
         />
+
+        {nextPanel?.key === "file" && (
+          <Fragment>
+            <Ariakit.CompositeSeparator />
+            <FinderItem
+              compositeId="file"
+              selectedId="file"
+              title={`File ${nextPanel.state.id}`}
+              onClick={() => openPanel({ key: "file", state: { id: nextPanel.state.id } })}
+            />
+          </Fragment>
+        )}
       </PanelList>
     </Panel>
   );

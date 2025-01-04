@@ -1,0 +1,21 @@
+.os-panel-theme {
+  --os-size: var(--gutter-width);
+  --os-padding-axis: 4px;
+  --os-padding-perpendicular: 2px;
+
+  --os-handle-bg: theme(colors.neutral.500);
+  --os-handle-bg-hover: theme(colors.neutral.400);
+  --os-handle-bg-active: theme(colors.neutral.300);
+}
+
+.os-panel-theme.os-scrollbar-vertical.os-scrollbar-auto-hide-hidden {
+  opacity: 1;
+  visibility: visible;
+  --os-handle-bg: theme(colors.neutral.800);
+}
+
+.os-panel-theme.os-scrollbar-vertical {
+  z-index: 20;
+  bottom: 0;
+  padding: calc(var(--mini-handle-height) + 4px) var(--os-padding-perpendicular);
+}
