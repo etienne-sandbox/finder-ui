@@ -4,20 +4,20 @@ import { atom, useAtomValue } from "jotai";
 import { useCallback, useMemo } from "react";
 import { FinderItem } from "../components/FinderItem";
 import { PanelList } from "../components/PanelList";
-import { filesData } from "../logic/data";
+import { usersData } from "../logic/data";
 import { Panel, usePanelOrFail } from "../logic/finderStore";
 
-export function FilesPanel() {
+export function UsersPanel() {
   const { $nextPanel, openPanel, closePanelsAfter } = usePanelOrFail();
 
-  const { data } = useSuspenseQuery(filesData());
+  const { data } = useSuspenseQuery(usersData());
   console.log(data);
 
   const $activeFileId = useMemo(
     () =>
       atom((get) => {
         const nextPanel = get($nextPanel);
-        if (nextPanel?.key === "file") {
+        if (nextPanel?.key === "user") {
           return nextPanel.state.id;
         }
         return null;
@@ -31,7 +31,7 @@ export function FilesPanel() {
 
   const onNavigate = useCallback(
     (itemId: string) => {
-      openPanel({ key: "file", state: { id: itemId } });
+      openPanel({ key: "user", state: { id: itemId } });
     },
     [openPanel]
   );

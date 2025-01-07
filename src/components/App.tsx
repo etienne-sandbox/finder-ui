@@ -1,21 +1,19 @@
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
+import { BASE_PANELS, FinderProvider, Panel, PanelProvider, PanelStates, useFinderOrFail } from "../logic/finderStore";
+import { FilePanel } from "../panels/File";
 import { FilesPanel } from "../panels/Files";
 import { HomePanel } from "../panels/Home";
+import { UsersPanel } from "../panels/Users";
 import { Finder } from "../shared/components/finder/Finder";
-import { BASE_PANELS, FinderProvider, Panel, PanelProvider, PanelStates, useFinderOrFail } from "../stores/finderStore";
 
 const PANELS_RENDERS: { [K in keyof PanelStates]: (state: PanelStates[K]) => React.ReactElement } = {
   home: () => <HomePanel />,
   files: () => <FilesPanel />,
-  file: (state) => (
-    <Panel className="w-full md:w-[600px]" key={state.id}>
-      File {state.id}
-    </Panel>
-  ),
+  file: (state) => <FilePanel fileId={state.id} />,
   notFound: () => <Panel className="w-full">Not found</Panel>,
   user: (state) => <Panel className="w-full md:w-[600px]">User {state.id}</Panel>,
-  users: (state) => <Panel className="w-full md:w-[600px]">Users {state.search}</Panel>,
+  users: () => <UsersPanel />,
 };
 
 export function App() {

@@ -1,12 +1,17 @@
 import * as Ariakit from "@ariakit/react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { Fragment, useMemo } from "react";
 import { FinderItem } from "../components/FinderItem";
 import { PanelList } from "../components/PanelList";
-import { Panel, usePanelOrFail } from "../stores/finderStore";
+import { homeData } from "../logic/data";
+import { Panel, usePanelOrFail } from "../logic/finderStore";
 
 export function HomePanel() {
   const { $nextPanel, openPanel, closePanelsAfter } = usePanelOrFail();
+
+  const { data } = useSuspenseQuery(homeData());
+  console.log(data);
 
   const nextPanel = useAtomValue($nextPanel);
 
