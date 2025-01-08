@@ -50,7 +50,7 @@ export const Menu = React.forwardRef<HTMLDivElement, MenuProps>(function Menu({ 
       getMenu: () => menuStore.getState().baseElement,
       getOffsetRight: () => (parent?.getOffsetRight() ?? 0) + (menuStore.getState().baseElement?.offsetWidth ?? 0),
     }),
-    [menuStore, parent]
+    [menuStore, parent],
   );
 
   // Hide the submenu when it's not visible on scroll.

@@ -79,15 +79,18 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           const panels: TPanelState[] = [...resolvePanelParents(panelsDefs, lastPanel), lastPanel];
           return panels;
         }),
-      [$location, $panelsDefs]
+      [$location, $panelsDefs],
     );
 
     const $requestedPanelStates = useMemo(
       () =>
-        atomWithDefault<{ action: "push" | "replace" | "init"; panels: TPanelsState } | null>((get) => {
+        atomWithDefault<{
+          action: "push" | "replace" | "init";
+          panels: TPanelsState;
+        } | null>((get) => {
           return { action: "init", panels: get($panelStates) };
         }),
-      [$panelStates]
+      [$panelStates],
     );
 
     const $loading = useMemo(() => atom((get) => get($requestedPanelStates) !== null), [$requestedPanelStates]);
@@ -143,7 +146,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
                 }
                 controller.signal.throwIfAborted();
                 await def.preload(panel.state);
-              })
+              }),
             );
             if (controller.signal.aborted) {
               return;
@@ -174,7 +177,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           }
           return panels.length - 2;
         }),
-      [$panelStates]
+      [$panelStates],
     );
 
     const $navigate = useMemo(
@@ -182,7 +185,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
         atom(null, (_get, set, action: "push" | "replace", panels: TPanelsState) => {
           set($requestedPanelStates, { action, panels });
         }),
-      [$requestedPanelStates]
+      [$requestedPanelStates],
     );
 
     const $openPanelFromIndex = useMemo(
@@ -200,7 +203,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           const nextPanels = [...base, panel];
           set($navigate, "push", nextPanels);
         }),
-      [$navigate, $panelStates, $panelsDefs]
+      [$navigate, $panelStates, $panelsDefs],
     );
 
     const $updateStateByIndex = useMemo(
@@ -218,7 +221,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           };
           set($navigate, "replace", nextPanels);
         }),
-      [$navigate, $panelStates]
+      [$navigate, $panelStates],
     );
 
     const $closePanelsAfterIndex = useMemo(
@@ -228,7 +231,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           const nextPanels = panels.slice(0, fromIndex + 1);
           set($navigate, "push", nextPanels);
         }),
-      [$navigate, $panelStates]
+      [$navigate, $panelStates],
     );
 
     const openPanelFromIndex = useSetAtom($openPanelFromIndex);
@@ -262,7 +265,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
     const $isActive = useMemo(() => atom((get) => get($activeIndex) === panelIndex), [$activeIndex, panelIndex]);
     const $isLast = useMemo(
       () => atom((get) => get($panelStates).length - 1 === panelIndex),
-      [$panelStates, panelIndex]
+      [$panelStates, panelIndex],
     );
 
     const $state = useMemo(() => atom((get) => get($currentPanel).state), [$currentPanel]);
@@ -278,14 +281,14 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           const nextPanel = panels[nextIndex];
           return nextPanel;
         }),
-      [$panelStates, panelIndex]
+      [$panelStates, panelIndex],
     );
 
     const openPanel = useCallback(
       (panel: TPanelState) => {
         return openPanelFromIndex(panelIndex, panel);
       },
-      [openPanelFromIndex, panelIndex]
+      [openPanelFromIndex, panelIndex],
     );
 
     const updateState = useCallback(
@@ -293,10 +296,10 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
         return updateStateByIndex(
           panelIndex,
           key as string,
-          update as React.SetStateAction<TPanelStateBase<PanelStates>>
+          update as React.SetStateAction<TPanelStateBase<PanelStates>>,
         );
       },
-      [panelIndex, updateStateByIndex]
+      [panelIndex, updateStateByIndex],
     );
 
     const closePanelsAfter = useCallback(() => {
@@ -357,7 +360,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
 
 function matchPanelFromPath<PanelStates extends Record<string, any>>(
   panelsDefs: readonly TFinderPanelDefBase<PanelStates>[],
-  path: Path
+  path: Path,
 ): false | TPanelStateBase<PanelStates> {
   for (const panelDef of panelsDefs) {
     const state = panelDef.fromLocation(path);
@@ -370,7 +373,7 @@ function matchPanelFromPath<PanelStates extends Record<string, any>>(
 
 function findPanelsLocation<PanelStates extends Record<string, any>>(
   panelsDefs: readonly TFinderPanelDefBase<PanelStates>[],
-  panels: readonly TPanelStateBase<PanelStates>[]
+  panels: readonly TPanelStateBase<PanelStates>[],
 ): To {
   const panelsReverse = [...panels].reverse();
   for (const panel of panelsReverse) {
@@ -387,7 +390,7 @@ function findPanelsLocation<PanelStates extends Record<string, any>>(
 
 function resolvePanelParents<PanelStates extends Record<string, any>>(
   panelsDefs: readonly TFinderPanelDefBase<PanelStates>[],
-  panelState: TPanelStateBase<PanelStates>
+  panelState: TPanelStateBase<PanelStates>,
 ): readonly TPanelStateBase<PanelStates>[] {
   const def = panelsDefs.find((def) => def.key === panelState.key);
   if (!def) {

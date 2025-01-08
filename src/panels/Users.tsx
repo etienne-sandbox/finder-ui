@@ -22,7 +22,7 @@ export function UsersPanel() {
         }
         return null;
       }),
-    [$nextPanel]
+    [$nextPanel],
   );
 
   const activeFileId = useAtomValue($activeFileId);
@@ -33,7 +33,7 @@ export function UsersPanel() {
     (itemId: string) => {
       openPanel({ key: "user", state: { id: itemId } });
     },
-    [openPanel]
+    [openPanel],
   );
 
   return (

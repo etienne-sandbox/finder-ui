@@ -12,7 +12,7 @@ export type TDoubleTapResult = (event: MouseEvent) => void;
  */
 export function onDoubleTap(
   callback: (event: MouseEvent) => void,
-  { thresholdMs = 500 }: TDoubleTapOptions = {}
+  { thresholdMs = 500 }: TDoubleTapOptions = {},
 ): TDoubleTapResult {
   let lastTap = 0;
 

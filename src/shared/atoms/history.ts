@@ -3,7 +3,9 @@ import { createBrowserHistory, Location } from "history";
 import { atom } from "jotai";
 import { atomEffect } from "jotai-effect";
 
-export type TLocationWithState<TState> = Omit<Location, "state"> & { state?: TState };
+export type TLocationWithState<TState> = Omit<Location, "state"> & {
+  state?: TState;
+};
 
 export function historyAtom<LocationState>() {
   const history = createBrowserHistory();

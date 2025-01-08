@@ -34,7 +34,7 @@ export function PanelList({ store, children, onDeselect, className, ...rest }: P
         return;
       }
     },
-    [store]
+    [store],
   );
 
   return (

@@ -45,14 +45,10 @@ export interface TUseResizeResult {
 }
 
 const SIZE_DIFF = {
-  left: (basePointer: PointerPos, newPointer: PointerPos) =>
-    newPointer.x - basePointer.x,
-  right: (basePointer: PointerPos, newPointer: PointerPos) =>
-    basePointer.x - newPointer.x,
-  top: (basePointer: PointerPos, newPointer: PointerPos) =>
-    newPointer.y - basePointer.y,
-  bottom: (basePointer: PointerPos, newPointer: PointerPos) =>
-    basePointer.y - newPointer.y,
+  left: (basePointer: PointerPos, newPointer: PointerPos) => newPointer.x - basePointer.x,
+  right: (basePointer: PointerPos, newPointer: PointerPos) => basePointer.x - newPointer.x,
+  top: (basePointer: PointerPos, newPointer: PointerPos) => newPointer.y - basePointer.y,
+  bottom: (basePointer: PointerPos, newPointer: PointerPos) => basePointer.y - newPointer.y,
 };
 
 /**
@@ -60,14 +56,13 @@ const SIZE_DIFF = {
  */
 export function useResize(
   ref: MutableRefObject<HTMLDivElement | null>,
-  { initialSize, direction, localStorageKey }: TUseResizeConfig
+  { initialSize, direction, localStorageKey }: TUseResizeConfig,
 ): TUseResizeResult {
   const [size, setSizeInternal] = useState<TUseResizeWidth>(() => {
     if (!localStorageKey) {
       return initialSize;
     }
-    const restoredSize =
-      parseSize(localStorage.getItem(localStorageKey)) ?? initialSize;
+    const restoredSize = parseSize(localStorage.getItem(localStorageKey)) ?? initialSize;
     localStorage.setItem(localStorageKey, serializeSize(restoredSize));
     return restoredSize;
   });
@@ -79,7 +74,7 @@ export function useResize(
         localStorage.setItem(localStorageKey, serializeSize(size));
       }
     },
-    [localStorageKey]
+    [localStorageKey],
   );
 
   const [active, setActive] = useState<boolean>(false);
@@ -104,9 +99,7 @@ export function useResize(
 
       function getActualSize() {
         const box = elem.getBoundingClientRect();
-        return direction === "left" || direction === "right"
-          ? box.width
-          : box.height;
+        return direction === "left" || direction === "right" ? box.width : box.height;
       }
 
       function getSize(pointerEvent: PointerEvent) {
@@ -141,7 +134,7 @@ export function useResize(
       document.addEventListener("pointermove", onPointerMove, true);
       document.addEventListener("pointerup", onPointerUp, true);
     },
-    [direction, ref, setSize, varName]
+    [direction, ref, setSize, varName],
   );
 
   const resetSize = useCallback(() => {

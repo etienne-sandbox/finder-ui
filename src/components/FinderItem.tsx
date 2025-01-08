@@ -12,7 +12,7 @@ interface FinderItemProps extends Omit<React.ComponentPropsWithoutRef<"button">,
 
 export const FinderItem = forwardRef(function Item(
   { compositeId, title, selectedId, ...props }: FinderItemProps,
-  ref: React.ForwardedRef<HTMLButtonElement>
+  ref: React.ForwardedRef<HTMLButtonElement>,
 ) {
   const { $isActive } = usePanelOrFail();
 
@@ -32,7 +32,7 @@ export const FinderItem = forwardRef(function Item(
           (isPanelActive
             ? "bg-blue-700 data-active-item:bg-blue-700 hover:bg-blue-600"
             : "bg-neutral-700 data-active-item:bg-neutral-700 hover:bg-neutral-600"),
-        "py-6"
+        "py-6",
       )}
       ref={ref}
       {...props}

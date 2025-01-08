@@ -15,8 +15,7 @@ OverlayScrollbars.plugin(ClickScrollPlugin);
 const GUTTER_WIDTH = 11;
 const MINI_HANDLE_HEIGHT = 20;
 
-export interface FinderPanelProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+export interface FinderPanelProps extends React.ComponentPropsWithoutRef<"div"> {
   initialWidth?: TUseResizeWidth;
   className?: string;
   resizeLocalStorageKey?: string;
@@ -52,18 +51,12 @@ export function FinderPanel({
     return () => clearTimeout(timer);
   }, [isActive]);
 
-  const onHandleClick = useMemo(
-    () => onDoubleTap(resizer.reset),
-    [resizer.reset]
-  );
+  const onHandleClick = useMemo(() => onDoubleTap(resizer.reset), [resizer.reset]);
 
   return (
     <div
       ref={panelRef}
-      className={cn(
-        "shrink-0 relative max-w-[var(--finder-panel-max-width)]",
-        className
-      )}
+      className={cn("shrink-0 relative max-w-[var(--finder-panel-max-width)]", className)}
       style={{
         width: resizer.dynamicSize,
         ["--gutter-width" as string]: `${GUTTER_WIDTH}px`,
@@ -103,16 +96,13 @@ export function FinderPanel({
   );
 }
 
-function MiniHandle({
-  className,
-  ...rest
-}: React.ComponentPropsWithoutRef<"div">) {
+function MiniHandle({ className, ...rest }: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div
       className={cn(
         "absolute flex justify-center items-center gap-[3px] p-0.5 cursor-col-resize touch-none",
         "before:content-[''] before:absolute before:-left-1 before:top-0 before:bottom-0 before:right-0",
-        className
+        className,
       )}
       {...rest}
     >
