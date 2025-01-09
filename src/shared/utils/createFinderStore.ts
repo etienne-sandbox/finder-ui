@@ -1,5 +1,5 @@
 /* SYNCED FILE */
-import { Path, To } from "history";
+import { parsePath, Path, To } from "history";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { atomEffect } from "jotai-effect";
 import { atomWithDefault } from "jotai/utils";
@@ -47,7 +47,7 @@ export interface ProviderPropsBase<PanelStates extends TPanelStatesBase> {
 
 export function createFinderStore<PanelStates extends TPanelStatesBase>() {
   type TPanelState = TPanelStateBase<PanelStates>;
-  type TPanelsState = readonly TPanelStateBase<PanelStates>[];
+  type TPanelsState = readonly TPanelState[];
 
   const {
     Provider: FinderProvider,
@@ -103,6 +103,8 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           return;
         }
         const { action, panels } = requestedPanels;
+        console.log({ action, panels });
+
         const resolved = panels.map((panel) => {
           const def = panelsDefs.find((def) => def.key === panel.key);
           if (!def) {
@@ -119,6 +121,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           if (action === "init") {
             return;
           }
+          console.log(panels);
           const location = findPanelsLocation(get($panelsDefs), panels);
           if (action === "push") {
             history.push(location, { panels });
@@ -151,14 +154,13 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
             if (controller.signal.aborted) {
               return;
             }
-            navigateNow();
           } catch (error) {
             if (controller.signal.aborted) {
               return;
             }
             console.error("Error during preload", error);
-            navigateNow();
           }
+          navigateNow();
         })();
         return () => {
           controller.abort();
@@ -186,6 +188,29 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
           set($requestedPanelStates, { action, panels });
         }),
       [$requestedPanelStates],
+    );
+
+    const $navigateTo = useMemo(
+      () =>
+        atom(
+          null,
+          (get, set, action: "push" | "replace", pathTo: To, { parents = true }: { parents?: boolean } = {}) => {
+            const panelsDefs = get($panelsDefs);
+            const path: Path = {
+              pathname: "/",
+              search: "",
+              hash: "",
+              ...parsePath(history.createHref(pathTo)),
+            };
+            const panel = matchPanelFromPath(panelsDefs, path);
+            if (!panel) {
+              throw new Error("No panel found for location, at least one panel should match");
+            }
+            const panels = parents ? resolvePanelParents(panelsDefs, panel).concat(panel) : [panel];
+            set($navigate, action, panels);
+          },
+        ),
+      [$navigate, $panelsDefs, history],
     );
 
     const $openPanelFromIndex = useMemo(
@@ -234,6 +259,8 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
       [$navigate, $panelStates],
     );
 
+    const navigate = useSetAtom($navigate);
+    const navigateTo = useSetAtom($navigateTo);
     const openPanelFromIndex = useSetAtom($openPanelFromIndex);
     const updateStateByIndex = useSetAtom($updateStateByIndex);
     const closePanelsAfterIndex = useSetAtom($closePanelsAfterIndex);
@@ -244,6 +271,8 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
       $loading,
       $panelStates,
       $activeIndex,
+      navigate,
+      navigateTo,
       openPanelFromIndex,
       updateStateByIndex,
       closePanelsAfterIndex,

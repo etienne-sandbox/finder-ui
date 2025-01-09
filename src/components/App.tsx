@@ -38,5 +38,9 @@ function AppInner() {
     });
   }, [panels]);
 
-  return <Finder className="fixed inset-4 rounded-md shadow-lg">{renderedPanels}</Finder>;
+  return (
+    <div className="fixed inset-0">
+      <Finder className="absolute inset-4 rounded-md shadow-lg">{renderedPanels}</Finder>;
+    </div>
+  );
 }
