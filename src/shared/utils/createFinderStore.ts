@@ -6,6 +6,7 @@ import { atomWithDefault } from "jotai/utils";
 import { createElement, ReactNode, useCallback, useMemo } from "react";
 import { historyAtom } from "../atoms/history";
 import { FinderPanelProps, FinderPanel as PanelBase } from "../components/finder/FinderPanel";
+import { useAtomFromValue } from "../hooks/useAtomFromValue";
 import { useMemoRecord } from "../hooks/useMemoRecord";
 import { createHookProvider } from "../utils/hookProvider";
 
@@ -13,7 +14,6 @@ export type TPanelStatesBase = Record<string, any>;
 
 export interface TPanelDef<Key, State, AnyState> {
   key: Key;
-  fromLocation: (location: Path) => false | State;
   toLocation?: (state: State) => To;
   parentPanels?: (state: State) => AnyState | null;
   /**
@@ -39,10 +39,22 @@ export interface TInternalState<PanelStates extends TPanelStatesBase> {
   panels: readonly TPanelStateBase<PanelStates>[];
 }
 
+export type TPanelsStateBase<PanelStates extends TPanelStatesBase> = readonly TPanelStateBase<PanelStates>[];
+
+export type TMatchLocationTools<PanelStates extends TPanelStatesBase> = {
+  withParents: (panel: TPanelStateBase<PanelStates>) => TPanelsStateBase<PanelStates>;
+};
+
+export type TMatchLocation<PanelStates extends TPanelStatesBase> = (
+  location: Path,
+  tools: TMatchLocationTools<PanelStates>,
+) => TPanelsStateBase<PanelStates>;
+
 export type TPanelsDefsBase<PanelStates extends TPanelStatesBase> = readonly TFinderPanelDefBase<PanelStates>[];
 
 export interface ProviderPropsBase<PanelStates extends TPanelStatesBase> {
   panels: TPanelsDefsBase<PanelStates>;
+  matchLocation: TMatchLocation<PanelStates>;
 }
 
 export function createFinderStore<PanelStates extends TPanelStatesBase>() {
@@ -53,7 +65,7 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
     Provider: FinderProvider,
     useMaybe: useFinderMaybe,
     useOrFail: useFinderOrFail,
-  } = createHookProvider("Finder", ({ panels }: ProviderPropsBase<PanelStates>) => {
+  } = createHookProvider("Finder", ({ panels: panelsDefs, matchLocation }: ProviderPropsBase<PanelStates>) => {
     const {
       history,
       $effect: $historyEffect,
@@ -61,25 +73,35 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
     } = useMemo(() => historyAtom<Partial<TInternalState<PanelStates>>>(), []);
     useAtom($historyEffect);
 
-    const $panelsDefs = useMemo(() => atom(panels), [panels]);
+    const $matchLocation = useAtomFromValue(matchLocation);
+    const $panelsDefs = useAtomFromValue(panelsDefs);
+
+    const $matchLocationWithTools = useMemo(
+      () =>
+        atom((get) => {
+          const matchLocation = get($matchLocation);
+          const panelsDefs = get($panelsDefs);
+          const withParents = (panel: TPanelState) => {
+            return resolvePanelParents(panelsDefs, panel);
+          };
+          return (location: Path) => {
+            return matchLocation(location, { withParents });
+          };
+        }),
+      [$matchLocation, $panelsDefs],
+    );
 
     const $panelStates = useMemo(
       () =>
         atom((get): TPanelsState => {
           const location = get($location);
-          const panelsDefs = get($panelsDefs);
           if (location.state && location.state.panels) {
             return location.state.panels;
           }
-          // if no state, we need to find the panel from the path
-          const lastPanel = matchPanelFromPath(panelsDefs, location);
-          if (!lastPanel) {
-            throw new Error("No panel found for location, at least one panel should match");
-          }
-          const panels: TPanelState[] = [...resolvePanelParents(panelsDefs, lastPanel), lastPanel];
-          return panels;
+          // if no state, we need to find the panels from the path
+          return get($matchLocationWithTools)(location);
         }),
-      [$location, $panelsDefs],
+      [$location, $matchLocationWithTools],
     );
 
     const $requestedPanelStates = useMemo(
@@ -192,25 +214,17 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
 
     const $navigateTo = useMemo(
       () =>
-        atom(
-          null,
-          (get, set, action: "push" | "replace", pathTo: To, { parents = true }: { parents?: boolean } = {}) => {
-            const panelsDefs = get($panelsDefs);
-            const path: Path = {
-              pathname: "/",
-              search: "",
-              hash: "",
-              ...parsePath(history.createHref(pathTo)),
-            };
-            const panel = matchPanelFromPath(panelsDefs, path);
-            if (!panel) {
-              throw new Error("No panel found for location, at least one panel should match");
-            }
-            const panels = parents ? resolvePanelParents(panelsDefs, panel).concat(panel) : [panel];
-            set($navigate, action, panels);
-          },
-        ),
-      [$navigate, $panelsDefs, history],
+        atom(null, (get, set, action: "push" | "replace", pathTo: To) => {
+          const path: Path = {
+            pathname: "/",
+            search: "",
+            hash: "",
+            ...parsePath(history.createHref(pathTo)),
+          };
+          const panels = get($matchLocationWithTools)(path);
+          set($navigate, action, panels);
+        }),
+      [$matchLocationWithTools, $navigate, history],
     );
 
     const $openPanelFromIndex = useMemo(
@@ -385,19 +399,6 @@ export function createFinderStore<PanelStates extends TPanelStatesBase>() {
     usePanelState,
     Panel,
   };
-}
-
-function matchPanelFromPath<PanelStates extends Record<string, any>>(
-  panelsDefs: readonly TFinderPanelDefBase<PanelStates>[],
-  path: Path,
-): false | TPanelStateBase<PanelStates> {
-  for (const panelDef of panelsDefs) {
-    const state = panelDef.fromLocation(path);
-    if (state !== false) {
-      return { key: panelDef.key, state, activeId: null };
-    }
-  }
-  return false;
 }
 
 function findPanelsLocation<PanelStates extends Record<string, any>>(

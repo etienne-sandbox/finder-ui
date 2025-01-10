@@ -1,6 +1,14 @@
 import { useAtomValue } from "jotai";
 import { useMemo } from "react";
-import { BASE_PANELS, FinderProvider, Panel, PanelProvider, PanelStates, useFinderOrFail } from "../logic/finderStore";
+import {
+  FinderProvider,
+  PANELS,
+  Panel,
+  PanelProvider,
+  PanelStates,
+  matchLocation,
+  useFinderOrFail,
+} from "../logic/finderStore";
 import { FilePanel } from "../panels/File";
 import { FilesPanel } from "../panels/Files";
 import { HomePanel } from "../panels/Home";
@@ -18,7 +26,7 @@ const PANELS_RENDERS: { [K in keyof PanelStates]: (state: PanelStates[K]) => Rea
 
 export function App() {
   return (
-    <FinderProvider panels={BASE_PANELS}>
+    <FinderProvider panels={PANELS} matchLocation={matchLocation}>
       <AppInner />
     </FinderProvider>
   );
