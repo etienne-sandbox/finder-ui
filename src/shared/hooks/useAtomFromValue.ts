@@ -1,3 +1,4 @@
+/* SYNCED FILE */
 import { atom, useSetAtom } from "jotai";
 import { useLayoutEffect, useMemo, useRef } from "react";
 
