@@ -19,6 +19,9 @@ importers:
       "@dldc/chemin":
         specifier: npm:@jsr/dldc__chemin@^12.0.0
         version: "@jsr/dldc__chemin@12.0.0"
+      "@react-hookz/deep-equal":
+        specifier: ^3.0.3
+        version: 3.0.3
       "@tanstack/react-query":
         specifier: ^5.62.15
         version: 5.62.15(react@18.3.1)
@@ -442,6 +445,11 @@ packages:
     resolution:
       { integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg== }
     engines: { node: ">=14" }
+
+  "@react-hookz/deep-equal@3.0.3":
+    resolution:
+      { integrity: sha512-SLy+NmiDpncqc2d9TR4Y4R7f8lUFOQK9WbnIq02A6wDxy+dTHfA2Np0dPvj0SFp6i1nqERLmEUe9MxPLuO/IqA== }
+    engines: { node: ">=18.0.0" }
 
   "@rollup/rollup-android-arm-eabi@4.29.1":
     resolution:
@@ -1957,6 +1965,8 @@ snapshots:
 
   "@pkgjs/parseargs@0.11.0":
     optional: true
+
+  "@react-hookz/deep-equal@3.0.3": {}
 
   "@rollup/rollup-android-arm-eabi@4.29.1":
     optional: true

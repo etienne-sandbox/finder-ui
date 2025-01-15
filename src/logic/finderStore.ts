@@ -1,5 +1,6 @@
 import { chemin, pString } from "@dldc/chemin";
-import { createFinderStore, TMatchLocation, TPanelsDefsBase } from "../shared/utils/createFinderStore";
+import { createFinderStore } from "../shared/utils/createFinderStore";
+import { TMatchLocation, TPanelsDefsBase } from "../shared/utils/createFinderStore.types";
 import { fileData, homeData, usersData } from "./data";
 import { queryClient } from "./queryClient";
 

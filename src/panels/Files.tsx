@@ -5,10 +5,11 @@ import { useCallback, useMemo } from "react";
 import { FinderItem } from "../components/FinderItem";
 import { PanelList } from "../components/PanelList";
 import { filesData } from "../logic/data";
-import { Panel, usePanelOrFail } from "../logic/finderStore";
+import { Panel, useFinderOrFail, usePanelOrFail } from "../logic/finderStore";
 
 export function FilesPanel() {
-  const { $nextPanel, openPanel, closePanelsAfter } = usePanelOrFail();
+  const { navigate } = useFinderOrFail();
+  const { $nextPanel, panelIndex } = usePanelOrFail();
 
   const { data } = useSuspenseQuery(filesData());
   console.log(data);
@@ -31,10 +32,17 @@ export function FilesPanel() {
 
   const onNavigate = useCallback(
     (itemId: string) => {
-      openPanel({ key: "file", state: { id: itemId } });
+      navigate({
+        fromIndex: panelIndex,
+        panels: { key: "file", state: { id: itemId } },
+      });
     },
-    [openPanel],
+    [navigate, panelIndex],
   );
+
+  const closePanelsAfter = useCallback(() => {
+    navigate({ fromIndex: panelIndex, panels: null });
+  }, [navigate, panelIndex]);
 
   return (
     <Panel className="w-full min-w-[300px] md:w-[600px]">

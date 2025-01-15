@@ -5,10 +5,11 @@ import { useCallback, useMemo } from "react";
 import { FinderItem } from "../components/FinderItem";
 import { PanelList } from "../components/PanelList";
 import { usersData } from "../logic/data";
-import { Panel, usePanelOrFail } from "../logic/finderStore";
+import { Panel, useFinderOrFail, usePanelOrFail } from "../logic/finderStore";
 
 export function UsersPanel() {
-  const { $nextPanel, openPanel, closePanelsAfter } = usePanelOrFail();
+  const { navigate } = useFinderOrFail();
+  const { $nextPanel, panelIndex } = usePanelOrFail();
 
   const { data } = useSuspenseQuery(usersData());
   console.log(data);
@@ -29,11 +30,18 @@ export function UsersPanel() {
 
   const store = Ariakit.useSelectStore({ orientation: "vertical" });
 
+  const closePanelsAfter = useCallback(() => {
+    navigate({ fromIndex: panelIndex, panels: null });
+  }, [navigate, panelIndex]);
+
   const onNavigate = useCallback(
     (itemId: string) => {
-      openPanel({ key: "user", state: { id: itemId } });
+      navigate({
+        panels: { key: "user", state: { id: itemId } },
+        fromIndex: panelIndex,
+      });
     },
-    [openPanel],
+    [navigate, panelIndex],
   );
 
   return (
