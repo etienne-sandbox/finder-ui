@@ -1,7 +1,7 @@
 import { chemin, pString } from "@dldc/chemin";
 import { createFinderStore } from "../shared/utils/createFinderStore";
 import { TMatchLocation, TPanelsDefsBase } from "../shared/utils/createFinderStore.types";
-import { fileData, homeData, usersData } from "./data";
+import { fileData, filesData, homeData, usersData } from "./data";
 import { queryClient } from "./queryClient";
 
 export type HomeActiveId = null | "files" | "users";
@@ -49,9 +49,9 @@ export const PANELS: TPanelsDefsBase<PanelStates> = [
     key: "files",
     toLocation: () => FILES_CHEMIN.serialize(),
     parentPanels: () => ({ key: "home", state: null }),
-    preloaded: () => Boolean(queryClient.getQueryData(homeData().queryKey)),
+    preloaded: () => Boolean(queryClient.getQueryData(filesData().queryKey)),
     preload: async () => {
-      await queryClient.prefetchQuery(homeData());
+      await queryClient.prefetchQuery(filesData());
     },
   },
   {
@@ -80,6 +80,10 @@ export const PANELS: TPanelsDefsBase<PanelStates> = [
   {
     key: "home",
     toLocation: () => HOME_CHEMIN.serialize(),
+    preloaded: () => Boolean(queryClient.getQueryData(homeData().queryKey)),
+    preload: async () => {
+      await queryClient.prefetchQuery(homeData());
+    },
   },
   {
     key: "notFound",
