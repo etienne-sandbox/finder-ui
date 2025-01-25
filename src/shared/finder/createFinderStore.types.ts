@@ -5,7 +5,7 @@ export type { Path, To };
 
 export type TPanelStatesBase = Record<string, any>;
 
-export interface TPanelDef<Key, State, AnyState> {
+export interface TPanelDef<Key, State, AnyState, PanelContext> {
   key: Key;
   toLocation?: (state: State) => To;
   parentPanels?: (state: State) => AnyState | null;
@@ -13,15 +13,15 @@ export interface TPanelDef<Key, State, AnyState> {
    * Called when the panel is about to be opened
    * This will block the navigation until the promise
    */
-  preload?: (state: State) => Promise<void> | void;
+  preload?: (state: State, context: PanelContext) => Promise<void> | void;
   /**
    * If return true, the preload will be skipped
    */
-  preloaded?: (state: State) => boolean;
+  preloaded?: (state: State, context: PanelContext) => boolean;
 }
 
-export type TFinderPanelDefBase<PanelStates extends TPanelStatesBase> = {
-  [K in keyof PanelStates]: TPanelDef<K, PanelStates[K], TPanelStateBase<PanelStates>>;
+export type TFinderPanelDefBase<PanelStates extends TPanelStatesBase, PanelContext> = {
+  [K in keyof PanelStates]: TPanelDef<K, PanelStates[K], TPanelStateBase<PanelStates>, PanelContext>;
 }[keyof PanelStates];
 
 export type TPanelStateBase<PanelStates extends TPanelStatesBase> = {
@@ -29,6 +29,7 @@ export type TPanelStateBase<PanelStates extends TPanelStatesBase> = {
 }[keyof PanelStates];
 
 export interface TInternalState<PanelStates extends TPanelStatesBase> {
+  routingId: string;
   panels: readonly TPanelStateBase<PanelStates>[];
 }
 
@@ -38,16 +39,21 @@ export type TMatchLocationTools<PanelStates extends TPanelStatesBase> = {
   withParents: (panel: TPanelStateBase<PanelStates>) => TPanelsStateBase<PanelStates>;
 };
 
-export type TMatchLocation<PanelStates extends TPanelStatesBase> = (
+export type TMatchLocation<PanelStates extends TPanelStatesBase, PanelContext> = (
   location: Path,
+  context: PanelContext,
   tools: TMatchLocationTools<PanelStates>,
 ) => TPanelsStateBase<PanelStates>;
 
-export type TPanelsDefsBase<PanelStates extends TPanelStatesBase> = readonly TFinderPanelDefBase<PanelStates>[];
+export type TPanelsDefsBase<PanelStates extends TPanelStatesBase, PanelContext> = readonly TFinderPanelDefBase<
+  PanelStates,
+  PanelContext
+>[];
 
-export interface ProviderPropsBase<PanelStates extends TPanelStatesBase> {
-  panels: TPanelsDefsBase<PanelStates>;
-  matchLocation: TMatchLocation<PanelStates>;
+export interface ProviderPropsBase<PanelStates extends TPanelStatesBase, PanelContext> {
+  panels: TPanelsDefsBase<PanelStates, PanelContext>;
+  context: PanelContext;
+  matchLocation: TMatchLocation<PanelStates, PanelContext>;
 }
 
 export interface FinderLinkProps<PanelStates extends TPanelStatesBase>
@@ -55,6 +61,10 @@ export interface FinderLinkProps<PanelStates extends TPanelStatesBase>
     TNavigateOptions<PanelStates> {}
 
 export interface TNavigateOptions<PanelStates extends TPanelStatesBase> {
+  /**
+   * Will keep the the panel and replace the panels after it
+   * Set to -1 to replace all panels
+   */
   fromIndex?: number;
   /**
    * Null will do slice from the currentIndex

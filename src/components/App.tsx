@@ -13,7 +13,7 @@ import { FilePanel } from "../panels/File";
 import { FilesPanel } from "../panels/Files";
 import { HomePanel } from "../panels/Home";
 import { UsersPanel } from "../panels/Users";
-import { Finder } from "../shared/components/finder/Finder";
+import { Finder } from "../shared/finder/Finder";
 
 const PANELS_RENDERS: { [K in keyof PanelStates]: (state: PanelStates[K]) => React.ReactElement } = {
   home: () => <HomePanel />,
@@ -26,7 +26,7 @@ const PANELS_RENDERS: { [K in keyof PanelStates]: (state: PanelStates[K]) => Rea
 
 export function App() {
   return (
-    <FinderProvider panels={PANELS} matchLocation={matchLocation}>
+    <FinderProvider panels={PANELS} matchLocation={matchLocation} context={{}}>
       <AppInner />
     </FinderProvider>
   );

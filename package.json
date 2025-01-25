@@ -10,13 +10,14 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
-    "copieur": "deno run -A jsr:@dldc/copieur@0.2.4 && prettier . --write"
+    "copieur": "deno run -A jsr:@dldc/copieur@0.3.0 && prettier . --write"
   },
   "dependencies": {
     "@ariakit/core": "^0.4.14",
     "@ariakit/react": "^0.4.15",
     "@ariakit/react-core": "^0.4.15",
     "@dldc/chemin": "npm:@jsr/dldc__chemin@^12.0.0",
+    "@phosphor-icons/react": "^2.1.7",
     "@react-hookz/deep-equal": "^3.0.3",
     "@tanstack/react-query": "^5.62.15",
     "clsx": "^2.1.1",
@@ -30,7 +31,8 @@
     "react-dom": "^18.3.1",
     "react-resize-detector": "^12.0.2",
     "smooth-scroll-into-view-if-needed": "^2.0.2",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.0",
+    "type-fest": "^4.31.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

@@ -40,3 +40,5 @@ function hexToSpaceSeparated(hex: string) {
 export function pick<T extends string, Out>(value: T, options: Record<T, Out>): Out {
   return options[value];
 }
+
+export type TInteractiveState = "hover" | "focus" | "active";

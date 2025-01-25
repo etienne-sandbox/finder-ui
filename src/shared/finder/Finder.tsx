@@ -3,9 +3,9 @@ import { nanoid } from "nanoid";
 import { OverlayScrollbars } from "overlayscrollbars";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 import { useCallback, useRef, useState } from "react";
-import { cn } from "../../styles/utils";
 
 import "overlayscrollbars/overlayscrollbars.css";
+import { cn } from "../styles/utils";
 
 export type FinderProps = React.PropsWithChildren<{
   className?: string;

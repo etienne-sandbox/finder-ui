@@ -1,10 +1,12 @@
 import { chemin, pString } from "@dldc/chemin";
-import { createFinderStore } from "../shared/utils/createFinderStore";
-import { TMatchLocation, TPanelsDefsBase } from "../shared/utils/createFinderStore.types";
+import { createFinderStore } from "../shared/finder/createFinderStore";
+import { TMatchLocation, TPanelsDefsBase } from "../shared/finder/createFinderStore.types";
 import { fileData, filesData, homeData, usersData } from "./data";
 import { queryClient } from "./queryClient";
 
 export type HomeActiveId = null | "files" | "users";
+
+export interface TFinderContext {}
 
 export interface PanelStates {
   home: null;
@@ -21,7 +23,7 @@ const USERS_CHEMIN = chemin("users");
 const USER_CHEMIN = chemin("user", pString("userId"));
 const HOME_CHEMIN = chemin();
 
-export const matchLocation: TMatchLocation<PanelStates> = (location, { withParents }) => {
+export const matchLocation: TMatchLocation<PanelStates, TFinderContext> = (location, _context, { withParents }) => {
   if (FILES_CHEMIN.matchExact(location.pathname)) {
     return withParents({ key: "files", state: {} });
   }
@@ -44,7 +46,7 @@ export const matchLocation: TMatchLocation<PanelStates> = (location, { withParen
   return withParents({ key: "notFound", state: null });
 };
 
-export const PANELS: TPanelsDefsBase<PanelStates> = [
+export const PANELS: TPanelsDefsBase<PanelStates, TFinderContext> = [
   {
     key: "files",
     toLocation: () => FILES_CHEMIN.serialize(),
@@ -100,4 +102,4 @@ export const {
   usePanelOrFail,
   usePanelState,
   Panel,
-} = createFinderStore<PanelStates>();
+} = createFinderStore<PanelStates, TFinderContext>();

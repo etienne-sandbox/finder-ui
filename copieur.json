@@ -2,9 +2,9 @@
   {
     "name": "Dldc Shared",
     "repo": "git@github.com:etienne-dldc/shared.git",
-    "branch": "master",
+    "branch": "main",
     "remotePath": "src/shared",
     "localPath": "src/shared",
-    "patterns": ["components/finder/*", "utils/createFinderStore.ts"]
+    "patterns": ["finder/*"]
   }
 ]
